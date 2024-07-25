@@ -40,3 +40,7 @@ services:
       replicas: 3
     networks:
       - user-app-network
+
+networks:
+  user-app-network:
+    driver: overlay
