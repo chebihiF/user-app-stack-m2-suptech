@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    deploy:
+      replicas: 2
+    networks:
+      - user-app-network
+
+  redis:
+    image: redis:latest
+    deploy:
+      replicas: 2
+    networks:
+      - user-app-network
+
+  back-end:
+    image: user-app-back:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - mydb
+      - redis
+    deploy:
+      replicas: 3
+    networks:
+      - user-app-network
+
+  front-end:
+    image: user-app-front:latest
+    ports:
+      - 80:80
+    depends_on:
+      - back-end
+    deploy:
+      replicas: 3
+    networks:
+      - user-app-network
